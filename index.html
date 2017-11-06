@@ -1,13 +1,191 @@
 <html>
     <head>
-        <title>Dsphar Dotcom</title>
+        <title>DspharDotcom</title>
+
+        <script src="lib\three.min.js"></script>
+        <script src="lib\jquery-3.2.1.min.js"></script>
+
+        <style>
+            body {
+                    background-image: url("resources/space.png");
+                    margin: 0; 
+                    overflow: hidden;
+                    color: white;
+            }
+
+            #overlay {
+                position: absolute;
+            }
+
+            </style>
+
+            
+
     </head>
     <body>
-        <p>
-            Hello world.
-        </p>
-        <p>
-            This page is hosted on Github pages.
-        </p>
+        <div id="overlay">
+            <p>
+                Hello world.
+            </p>
+            <p>
+                This page is hosted on Github Pages. It is a proof-of-concept of some Web GL stuff. I am currently refactoring it to be more clean on the back end, and will expand it after it is cleaned up.
+            </p>
+            <p>
+                -Dsphar
+            </p>
+        </div>
+
+        <div id="WebGL-output" ></div>
+
+        <script>
+
+        //To test locally, run from cmd...
+        //"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="C:\Users\David\AppData\Local\Google\Chrome\User Data\Default"
+            
+            $(function () { 
+  var scene = new THREE.Scene(); 
+  var camera = new THREE.PerspectiveCamera(45 , window.innerWidth / window.innerHeight , 0.1, 1000); 
+  var renderer = new THREE.WebGLRenderer(); 
+
+  renderer.setSize(window.innerWidth, window.innerHeight);  
+  
+  var planetGeometry = new THREE.SphereGeometry(4,20,20);
+
+  // instantiate a loader
+var loader = new THREE.TextureLoader();
+
+//allow cross origin loading
+//loader.crossOrigin = '';
+
+// load a resource
+// loader.load('textures/land_ocean_ice_cloud_2048.jpg',
+//     // Function when resource is loaded
+//     function ( texture ) {},
+//     // Function called when download progresses
+//     function ( xhr ) {},
+//     // Function called when download errors
+//     function ( xhr ) {}
+// );
+
+
+
+  
+  //Load the planet textures
+  THREE.ImageUtils.crossOrigin = '';
+
+  var texture = loader.load("resources/earth/texture.jpg",
+    // Function when resource is loaded
+    function ( texture ) {},
+    // Function called when download progresses
+    function ( xhr ) {},
+    // Function called when download errors
+    function ( xhr ) {});
+  var normalmap = loader.load("resources/normal-map-512.jpg",
+    // Function when resource is loaded
+    function ( texture ) {},
+    // Function called when download progresses
+    function ( xhr ) {},
+    // Function called when download errors
+    function ( xhr ) {});
+  var specmap = loader.load("resources/earth/normalmap.jpg",
+    // Function when resource is loaded
+    function ( texture ) {},
+    // Function called when download progresses
+    function ( xhr ) {},
+    // Function called when download errors
+    function ( xhr ) {});
+
+  var planetMaterial = new THREE.MeshPhongMaterial(); 
+  planetMaterial.map = texture;
+  
+  planetMaterial.specularMap = specmap;
+  planetMaterial.specular = new THREE.Color( 0x000000 );
+  planetMaterial.shininess = 1;
+  
+   planetMaterial.normalMap = normalmap;
+   planetMaterial.normalScale.set(-0.3,-0.3);
+
+  var planet = new THREE.Mesh(planetGeometry, planetMaterial); 
+
+  //here we allow the texture/normal/specular maps to wrap
+  planet.material.map.wrapS = THREE.RepeatWrapping; 
+  planet.material.map.wrapT = THREE.RepeatWrapping;
+  planet.material.normalMap.wrapS = THREE.RepeatWrapping; 
+  planet.material.normalMap.wrapT = THREE.RepeatWrapping;
+  planet.material.specularMap.wrapS = THREE.RepeatWrapping; 
+  planet.material.specularMap.wrapT = THREE.RepeatWrapping;
+ 
+  //here we repeat the texture/normal/specular maps twice along X
+  planet.material.map.repeat.set( 1, 1);
+  planet.material.normalMap.repeat.set( 1, 1);
+  planet.material.specularMap.repeat.set( 1, 1);
+
+  planet.position.x = 0; 
+  planet.position.y = 0; 
+  planet.position.z = 0; 
+ 
+  scene.add(planet); 
+  
+  //Space background is a large sphere
+  var spacetex = loader.load("resources/space.png",
+    // Function when resource is loaded
+    function ( texture ) {},
+    // Function called when download progresses
+    function ( xhr ) {},
+    // Function called when download errors
+    function ( xhr ) {});
+  var spacesphereGeo = new THREE.SphereGeometry(100,50,50);
+  var spacesphereMat = new THREE.MeshBasicMaterial();
+  spacesphereMat.map = spacetex;
+
+  var spacesphere = new THREE.Mesh(spacesphereGeo,spacesphereMat);
+  
+  //spacesphere needs to be double sided as the camera is within the spacesphere
+  spacesphere.material.side = THREE.DoubleSide;
+  
+  
+  spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
+  spacesphere.material.map.wrapT = THREE.RepeatWrapping;
+  spacesphere.material.map.repeat.set( 3, 2);
+  
+  scene.add(spacesphere);
+ 
+  //position camera
+  camera.position.x = 0; 
+  camera.position.y = 20; 
+  camera.position.z = -50; 
+  camera.lookAt(scene.position); 
+  
+  //create two spotlights to illuminate the scene
+  var spotLight = new THREE.SpotLight( 0xffffff ); 
+  spotLight.position.set( -250, 100, -125 ); 
+  spotLight.intensity = 2;
+  scene.add( spotLight );
+
+  var spotLight2 = new THREE.SpotLight( 0xC4D0FF ); 
+  spotLight2.position.set(100, -100, 30 ); 
+  spotLight2.intensity = .5;
+  scene.add( spotLight2 );
+
+  $("#WebGL-output").append(renderer.domElement); 
+ 
+  //call render loop once
+  render();
+  
+  //render loop
+  function render() { 
+    requestAnimationFrame(render); 
+    //rotate planet and spacesphere
+    planet.rotation.y += 0.004;
+    spacesphere.rotation.y+= 0.00005;
+    spacesphere.rotation.x += 0.000005;
+    renderer.render(scene, camera); 
+  };
+
+});
+
+            </script>
+
+
     </body>
 </html>
