@@ -2,6 +2,7 @@
     <head>
         <title>DspharDotcom</title>
 
+        <script src="HelloWorld.js"></script>
         <script src="lib\three.min.js"></script>
         <script src="lib\jquery-3.2.1.min.js"></script>
 
@@ -43,6 +44,11 @@
         //"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="C:\Users\David\AppData\Local\Google\Chrome\User Data\Default"
             
             $(function () { 
+
+
+
+
+                
   var scene = new THREE.Scene(); 
   var camera = new THREE.PerspectiveCamera(45 , window.innerWidth / window.innerHeight , 0.1, 1000); 
   var renderer = new THREE.WebGLRenderer(); 
@@ -51,35 +57,19 @@
   
   var planetGeometry = new THREE.SphereGeometry(4,20,20);
 
-  // instantiate a loader
-var loader = new THREE.TextureLoader();
+//   // instantiate a loader
+ var loader = new THREE.TextureLoader();
+ 
+//   //Load the planet textures
+   THREE.ImageUtils.crossOrigin = '';
 
-//allow cross origin loading
-//loader.crossOrigin = '';
-
-// load a resource
-// loader.load('textures/land_ocean_ice_cloud_2048.jpg',
-//     // Function when resource is loaded
-//     function ( texture ) {},
-//     // Function called when download progresses
-//     function ( xhr ) {},
-//     // Function called when download errors
-//     function ( xhr ) {}
-// );
-
-
-
-  
-  //Load the planet textures
-  THREE.ImageUtils.crossOrigin = '';
-
-  var texture = loader.load("resources/earth/texture.jpg",
-    // Function when resource is loaded
-    function ( texture ) {},
-    // Function called when download progresses
-    function ( xhr ) {},
-    // Function called when download errors
-    function ( xhr ) {});
+   var texture = loader.load("resources/earth/texture.jpg",
+     // Function when resource is loaded
+     function ( texture ) {},
+     // Function called when download progresses
+     function ( xhr ) {},
+     // Function called when download errors
+     function ( xhr ) {});
   var normalmap = loader.load("resources/normal-map-512.jpg",
     // Function when resource is loaded
     function ( texture ) {},
@@ -105,7 +95,7 @@ var loader = new THREE.TextureLoader();
    planetMaterial.normalMap = normalmap;
    planetMaterial.normalScale.set(-0.3,-0.3);
 
-  var planet = new THREE.Mesh(planetGeometry, planetMaterial); 
+   var planet = new THREE.Mesh(planetGeometry, planetMaterial); 
 
   //here we allow the texture/normal/specular maps to wrap
   planet.material.map.wrapS = THREE.RepeatWrapping; 
@@ -152,9 +142,9 @@ var loader = new THREE.TextureLoader();
  
   //position camera
   camera.position.x = 0; 
-  camera.position.y = 20; 
-  camera.position.z = -50; 
-  camera.lookAt(scene.position); 
+  camera.position.y = 10; 
+  camera.position.z = -35; 
+  camera.lookAt(scene.position);
   
   //create two spotlights to illuminate the scene
   var spotLight = new THREE.SpotLight( 0xffffff ); 
@@ -167,18 +157,26 @@ var loader = new THREE.TextureLoader();
   spotLight2.intensity = .5;
   scene.add( spotLight2 );
 
-  $("#WebGL-output").append(renderer.domElement); 
+   $("#WebGL-output").append(renderer.domElement); 
  
-  //call render loop once
-  render();
+   //call render loop once
+   render();
   
   //render loop
   function render() { 
     requestAnimationFrame(render); 
     //rotate planet and spacesphere
     planet.rotation.y += 0.004;
-    spacesphere.rotation.y+= 0.00005;
-    spacesphere.rotation.x += 0.000005;
+    spacesphere.rotation.y+= 0.000075;
+    spacesphere.rotation.x += 0.0000075;
+
+    //move camera
+    camera.position.x += .0; 
+    camera.position.y += -.01; 
+    camera.position.z += .001; 
+    camera.lookAt(scene.position);
+
+
     renderer.render(scene, camera); 
   };
 
