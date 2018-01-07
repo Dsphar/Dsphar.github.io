@@ -1,0 +1,27 @@
+{
+  "name": "com.dpshar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "HelloWorld.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/three": "^0.89.1",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dsphar/dsphar.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dsphar/dsphar.github.io/issues"
+  },
+  "homepage": "https://github.com/Dsphar/dsphar.github.io#readme"
+}
